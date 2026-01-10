@@ -373,7 +373,8 @@ export function ChatBot() {
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsSettingsOpen(true)}
-                  className="text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/10"
+                  className="hidden" // this will hide the button
+                  /*className="text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary-foreground/10"*/
                 >
                   <Settings className="w-4 h-4" />
                 </Button>
