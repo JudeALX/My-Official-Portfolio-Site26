@@ -1,4 +1,5 @@
 "use client"
+import * as gtag from "@/lib/gtag"; // Make sure this is at the top of your file
 
 import type React from "react"
 
@@ -213,6 +214,42 @@ export function ChatBot() {
   }
 
   const handleSend = () => {
+  if (!input.trim()) return;
+
+  // Add user message
+  const userMessage: Message = {
+    id: Date.now().toString(),
+    content: input,
+    isBot: false,
+    timestamp: new Date(),
+  };
+  setMessages((prev) => [...prev, userMessage]);
+
+  // Track message in Google Analytics
+  gtag.event({
+    action: "chatbot_message",
+    category: "Chatbot",
+    label: input, // this is the actual user message
+  });
+
+  setInput("");
+
+  // Add bot response
+  setTimeout(() => {
+    const { response, attachments } = findResponse(input);
+    const botMessage: Message = {
+      id: (Date.now() + 1).toString(),
+      content: response,
+      isBot: true,
+      timestamp: new Date(),
+      attachments: attachments,
+    };
+    setMessages((prev) => [...prev, botMessage]);
+  }, 800);
+};
+
+
+  /**const handleSend = () => {
     if (!input.trim()) return
 
     const userMessage: Message = {
@@ -237,7 +274,7 @@ export function ChatBot() {
       setMessages((prev) => [...prev, botMessage])
     }, 800)
   }
-
+**/
   const handleAddResponse = () => {
     if (!newTrigger.trim() || !newResponse.trim()) return
 
