@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { useInView } from "framer-motion"
 import { useRef, useState } from "react"
 import { Mail, MapPin, Linkedin, Send, CheckCircle } from "lucide-react"
@@ -15,11 +15,31 @@ export function ContactSection() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-100px" })
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [error, setError] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    setIsSubmitted(true)
-    setTimeout(() => setIsSubmitted(false), 3000)
+    setError(false)
+
+    const form = e.currentTarget
+    const formData = new FormData(form)
+
+    const response = await fetch("https://formspree.io/f/xaqqwdrj", {
+      method: "POST",
+      body: formData,
+      headers: {
+        Accept: "application/json",
+      },
+    })
+
+    if (response.ok) {
+      setIsSubmitted(true)
+      form.reset()
+      // automatically hide success alert after 3 seconds
+      setTimeout(() => setIsSubmitted(false), 3000)
+    } else {
+      setError(true)
+    }
   }
 
   return (
@@ -107,54 +127,69 @@ export function ContactSection() {
             <div className="bg-card rounded-3xl p-6 lg:p-8 shadow-lg border border-border">
               <h3 className="text-xl font-bold text-foreground mb-6">Send a Message</h3>
 
-              {isSubmitted ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="flex flex-col items-center justify-center py-12 text-center"
-                >
-                  <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
-                  <h4 className="text-xl font-bold text-foreground mb-2">Message Sent!</h4>
-                  <p className="text-muted-foreground">Thank you for reaching out. I'll get back to you soon.</p>
-                </motion.div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-5">
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm font-medium text-foreground mb-2 block">First Name</label>
-                      <Input placeholder="John" required className="bg-muted/50" />
+              <AnimatePresence>
+                {isSubmitted ? (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    transition={{ duration: 0.5 }}
+                    className="flex flex-col items-center justify-center py-12 text-center bg-green-50 rounded-xl p-6"
+                  >
+                    <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
+                    <h4 className="text-xl font-bold text-foreground mb-2">Message Sent!</h4>
+                    <p className="text-muted-foreground">Thank you for reaching out. I'll get back to you soon.</p>
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    onSubmit={handleSubmit}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="space-y-5"
+                  >
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-sm font-medium text-foreground mb-2 block">First Name</label>
+                        <Input name="firstName" placeholder="John" required className="bg-muted/50" />
+                      </div>
+                      <div>
+                        <label className="text-sm font-medium text-foreground mb-2 block">Last Name</label>
+                        <Input name="lastName" placeholder="Doe" required className="bg-muted/50" />
+                      </div>
                     </div>
+
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-2 block">Last Name</label>
-                      <Input placeholder="Doe" required className="bg-muted/50" />
+                      <label className="text-sm font-medium text-foreground mb-2 block">Email</label>
+                      <Input type="email" name="email" placeholder="john@example.com" required className="bg-muted/50" />
                     </div>
-                  </div>
 
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">Email</label>
-                    <Input type="email" placeholder="john@example.com" required className="bg-muted/50" />
-                  </div>
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-2 block">Subject</label>
+                      <Input name="subject" placeholder="E-commerce Consultation" required className="bg-muted/50" />
+                    </div>
 
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">Subject</label>
-                    <Input placeholder="E-commerce Consultation" required className="bg-muted/50" />
-                  </div>
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-2 block">Message</label>
+                      <Textarea
+                        name="message"
+                        placeholder="Tell me about your project..."
+                        required
+                        className="bg-muted/50 min-h-[120px] resize-none"
+                      />
+                    </div>
 
-                  <div>
-                    <label className="text-sm font-medium text-foreground mb-2 block">Message</label>
-                    <Textarea
-                      placeholder="Tell me about your project..."
-                      required
-                      className="bg-muted/50 min-h-[120px] resize-none"
-                    />
-                  </div>
+                    {error && (
+                      <p className="text-red-500 text-sm">Oops! Something went wrong. Please try again.</p>
+                    )}
 
-                  <Button type="submit" className="w-full bg-primary hover:bg-primary/90" size="lg">
-                    <Send className="w-4 h-4 mr-2" />
-                    Send Message
-                  </Button>
-                </form>
-              )}
+                    <Button type="submit" className="w-full bg-primary hover:bg-primary/90" size="lg">
+                      <Send className="w-4 h-4 mr-2" />
+                      Send Message
+                    </Button>
+                  </motion.form>
+                )}
+              </AnimatePresence>
             </div>
           </motion.div>
         </div>
