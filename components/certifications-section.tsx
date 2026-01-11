@@ -9,11 +9,12 @@ import Link from "next/link"
 
 const certifications = [
   {
-    title: "Foundations of Digital Marketing and E-commerce",
+    title: "Professional Google Digital Marketing & E-commerce",
     issuer: "Google / Coursera",
     date: "May 2023",
     image: "/google-icon.png",
-    link: "https://coursera.org/account/accomplishments/certificate/4D6HF2UJLYZF",
+    link: "https://www.coursera.org/account/accomplishments/specialization/certificate/T2NEV76BLR5W",
+    /*link: "https://coursera.org/account/accomplishments/certificate/4D6HF2UJLYZF",*/
   },
   {
     title: "Certified Search Engine Optimization (SEO)",
@@ -29,9 +30,9 @@ const certifications = [
     image: "/web-development-code-icon.png",
   },
   {
-    title: "The Fundamentals of Digital Marketing",
-    issuer: "Wild Fusion Digital Centre",
-    date: "Nov 2020",
+    title: "Al Augmented Professional Development Skills in the Digital Age",
+    issuer: "ALX Africa",
+    date: "Nov 2024",
     image: "/digital-marketing-icon.png",
   },
   {
@@ -41,9 +42,9 @@ const certifications = [
     image: "/university-of-london-logo.jpg",
   },
   {
-    title: "International Computer Drivers License (ICDL)",
-    issuer: "ICDL Africa",
-    date: "Aug 2014",
+    title: "Software Engineering",
+    issuer: "ALX Africa",
+    date: "Aug 2023",
     image: "/placeholder.svg?height=80&width=80",
   },
 ]
