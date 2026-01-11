@@ -27,7 +27,7 @@ const experiences = [
   {
     title: "E-Commerce Website Coordinator & Digital Marketer",
     company: "International Company",
-    location: "Remote",
+    location: "Nigeria",
     period: "Nov 2020 - Feb 2023",
     duration: "2 years 3 months",
     description:
@@ -59,7 +59,7 @@ const experiences = [
   {
     title: "Digital Marketing Manager",
     company: "Apex Network Limited",
-    location: "Nigeria",
+    location: "Remote",
     period: "Mar 2021 - May 2021",
     duration: "2 months",
     description:
